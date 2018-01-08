@@ -9,17 +9,17 @@ using System.Windows.Forms.Design;
 namespace Cyotek.Windows.Forms.Design // ReSharper restore CheckNamespace
 {
   // Cyotek ImageBox
-  // Copyright (c) 2010-2013 Cyotek.
+  // Copyright (c) 2010-2015 Cyotek Ltd.
   // http://cyotek.com
   // http://cyotek.com/blog/tag/imagebox
 
-  // Licensed under the MIT License. See imagebox-license.txt for the full text.
+  // Licensed under the MIT License. See license.txt for the full text.
 
   // If you use this control in your applications, attribution, donations or contributions are welcome.
 
   // TODO: This library currently isn't used until I can work out how to properly get client applications to use it without an explicit reference.
   // Using a Designer attribute with a string type and DLL name is supposed to work, but the IDE isn't displaying tasks for the demo project this way
-  // I don't want it to be a part of the core ImageBox library due to the reference to System.Design, which means you can no longer flag
+  // I don't want it to be a part of the core ImageBox library due to the reference to System.Design as this means you can no longer flag
   // the assembly as only requiring the Client version of the .NET Framework but only the Full, which may not be suitable for everyone
 
   /// <summary>
@@ -53,17 +53,17 @@ namespace Cyotek.Windows.Forms.Design // ReSharper restore CheckNamespace
           _verbs = new DesignerVerbCollection();
 
           _dockVerb = new DesignerVerb("Dock to parent control", this.DockVerbHandler)
-          {
-            Description = "Dock this control with its parent.",
-            Enabled = this.ImageBoxControl.Dock == DockStyle.None
-          };
+                      {
+                        Description = "Dock this control with its parent.",
+                        Enabled = this.ImageBoxControl.Dock == DockStyle.None
+                      };
           _verbs.Add(_dockVerb);
 
           _undockVerb = new DesignerVerb("Undock from parent control", this.UndockVerbHandler)
-          {
-            Description = "Undock this control from its parent.",
-            Enabled = this.ImageBoxControl.Dock != DockStyle.None
-          };
+                        {
+                          Description = "Undock this control from its parent.",
+                          Enabled = this.ImageBoxControl.Dock != DockStyle.None
+                        };
           _verbs.Add(_undockVerb);
         }
 
@@ -73,7 +73,7 @@ namespace Cyotek.Windows.Forms.Design // ReSharper restore CheckNamespace
 
     #endregion
 
-    #region Overridden Members
+    #region Overridden Methods
 
     /// <summary>
     /// Initializes the designer with the specified component.
@@ -88,7 +88,9 @@ namespace Cyotek.Windows.Forms.Design // ReSharper restore CheckNamespace
       // attach an event to notify us of when a component has been modified
       changeService = (IComponentChangeService)this.GetService(typeof(IComponentChangeService));
       if (changeService != null)
+      {
         changeService.ComponentChanged += this.OnComponentChanged;
+      }
     }
 
     /// <summary>
@@ -103,7 +105,9 @@ namespace Cyotek.Windows.Forms.Design // ReSharper restore CheckNamespace
 
         changeService = (IComponentChangeService)this.GetService(typeof(IComponentChangeService));
         if (changeService != null)
+        {
           changeService.ComponentChanged -= this.OnComponentChanged;
+        }
       }
 
       base.Dispose(disposing);
@@ -111,7 +115,7 @@ namespace Cyotek.Windows.Forms.Design // ReSharper restore CheckNamespace
 
     #endregion
 
-    #region Properties
+    #region Protected Properties
 
     /// <summary>
     /// Gets the TabList control currently being designed
@@ -124,7 +128,7 @@ namespace Cyotek.Windows.Forms.Design // ReSharper restore CheckNamespace
 
     #endregion
 
-    #region Members
+    #region Private Members
 
     /// <summary>
     /// Called when the Dock verb is activated
@@ -200,9 +204,13 @@ namespace Cyotek.Windows.Forms.Design // ReSharper restore CheckNamespace
     private void OnComponentChanged(object sender, ComponentChangedEventArgs e)
     {
       if (_dockVerb != null)
+      {
         _dockVerb.Enabled = this.ImageBoxControl.Dock == DockStyle.None;
+      }
       if (_undockVerb != null)
+      {
         _undockVerb.Enabled = this.ImageBoxControl.Dock != DockStyle.None;
+      }
     }
 
     #endregion

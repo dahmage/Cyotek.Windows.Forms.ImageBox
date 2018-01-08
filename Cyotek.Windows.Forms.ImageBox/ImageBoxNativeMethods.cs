@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Runtime.InteropServices;
 
 // ReSharper disable NotAccessedField.Global
@@ -8,19 +9,19 @@ using System.Runtime.InteropServices;
 namespace Cyotek.Windows.Forms
 {
   // Cyotek ImageBox
-  // Copyright (c) 2010-2013 Cyotek.
+  // Copyright (c) 2010-2015 Cyotek Ltd.
   // http://cyotek.com
   // http://cyotek.com/blog/tag/imagebox
 
-  // Licensed under the MIT License. See imagebox-license.txt for the full text.
+  // Licensed under the MIT License. See license.txt for the full text.
 
   // If you use this control in your applications, attribution, donations or contributions are welcome.
 
   // ReSharper disable ClassNeverInstantiated.Global
   // ReSharper disable PartialTypeWithSinglePart
   internal partial class NativeMethods // partial for when linking this file into other assemblies
-    // ReSharper restore PartialTypeWithSinglePart
-    // ReSharper restore ClassNeverInstantiated.Global
+  // ReSharper restore PartialTypeWithSinglePart
+  // ReSharper restore ClassNeverInstantiated.Global
   {
     #region Enums
 
@@ -96,9 +97,13 @@ namespace Cyotek.Windows.Forms
 
     public const int WS_VSCROLL = 0x00200000;
 
+    public const int WM_MOUSEWHEEL = 0x20a;
+
+    public const int WM_MOUSEHWHEEL = 0x20e;
+
     #endregion
 
-    #region Constructors
+    #region Private Constructors
 
     private NativeMethods()
     { }
@@ -118,6 +123,12 @@ namespace Cyotek.Windows.Forms
 
     [DllImport("user32.dll")]
     public static extern int SetWindowLong(IntPtr hwnd, int index, UInt32 newLong);
+
+    [DllImport("user32.dll")]
+    public static extern IntPtr WindowFromPoint(Point point);
+
+    [DllImport("user32.dll", SetLastError = false)]
+    public static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wParam, IntPtr lParam);
 
     #endregion
 

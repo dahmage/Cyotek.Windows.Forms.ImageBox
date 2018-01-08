@@ -25,7 +25,7 @@ namespace Cyotek.Windows.Forms
 
     #endregion
 
-    #region Constructors
+    #region Public Constructors
 
     /// <summary>
     ///   Initializes a new instance of the <see cref="VirtualScrollableControl" /> class.
@@ -70,7 +70,7 @@ namespace Cyotek.Windows.Forms
 
     #endregion
 
-    #region Overridden Members
+    #region Overridden Methods
 
     /// <summary>
     ///   Raises the <see cref="System.Windows.Forms.Control.Resize" /> event.
@@ -95,14 +95,22 @@ namespace Cyotek.Windows.Forms
         yOffset = scrollArea.Bottom - this.DisplayRectangle.Bottom;
 
         if (this.AutoScrollPosition.Y < 0 && yOffset < 0)
+        {
           yOffset = Math.Max(yOffset, this.AutoScrollPosition.Y);
+        }
         else
+        {
           yOffset = 0;
+        }
 
         if (this.AutoScrollPosition.X < 0 && xOffset < 0)
+        {
           xOffset = Math.Max(xOffset, this.AutoScrollPosition.X);
+        }
         else
+        {
           xOffset = 0;
+        }
 
         this.ScrollByOffset(new Size(xOffset, yOffset));
       }
@@ -141,14 +149,16 @@ namespace Cyotek.Windows.Forms
     protected override void OnVisibleChanged(EventArgs e)
     {
       if (base.Visible)
+      {
         base.PerformLayout();
+      }
 
       base.OnVisibleChanged(e);
     }
 
     #endregion
 
-    #region Properties
+    #region Public Properties
 
     /// <summary>
     ///   Gets or sets a value indicating whether the container enables the user to scroll to any controls placed outside of its visible boundaries.
@@ -187,9 +197,13 @@ namespace Cyotek.Windows.Forms
       set
       {
         if (value.Width < 0)
-          throw new ArgumentOutOfRangeException("value", "Width must be a positive integer.");
+        {
+          throw new ArgumentOutOfRangeException(nameof(value), "Width must be a positive integer.");
+        }
         else if (value.Height < 0)
-          throw new ArgumentOutOfRangeException("value", "Height must be a positive integer.");
+        {
+          throw new ArgumentOutOfRangeException(nameof(value), "Height must be a positive integer.");
+        }
 
         if (this.AutoScrollMargin != value)
         {
@@ -249,6 +263,10 @@ namespace Cyotek.Windows.Forms
       }
     }
 
+    #endregion
+
+    #region Protected Properties
+
     /// <summary>
     ///   Total area of all visible controls which are scrolled with this container
     /// </summary>
@@ -263,7 +281,9 @@ namespace Cyotek.Windows.Forms
         foreach (Control child in Controls)
         {
           if (child.Visible)
+          {
             area = Rectangle.Union(child.Bounds, area);
+          }
         }
 
         return Rectangle.Union(area, new Rectangle(_autoScrollPosition, _autoScrollMinSize));
@@ -281,7 +301,7 @@ namespace Cyotek.Windows.Forms
 
     #endregion
 
-    #region Members
+    #region Public Members
 
     /// <summary>
     ///   Scrolls the specified child control into view on an auto-scroll enabled control.
@@ -296,9 +316,15 @@ namespace Cyotek.Windows.Forms
         position = this.AdjustPositionToSize(new Point(this.AutoScrollPosition.X + activeControl.Left, this.AutoScrollPosition.Y + activeControl.Top));
 
         if (position.X != this.AutoScrollPosition.X || position.Y != this.AutoScrollPosition.Y)
+        {
           this.ScrollByOffset(new Size(this.AutoScrollPosition.X - position.X, this.AutoScrollPosition.Y - position.Y));
+        }
       }
     }
+
+    #endregion
+
+    #region Protected Members
 
     /// <summary>
     ///   Adjusts the given Point according to the scroll size
@@ -314,13 +340,21 @@ namespace Cyotek.Windows.Forms
       y = position.Y;
 
       if (x < -(this.AutoScrollMinSize.Width - this.ClientRectangle.Width))
+      {
         x = -(this.AutoScrollMinSize.Width - this.ClientRectangle.Width);
+      }
       if (y < -(this.AutoScrollMinSize.Height - this.ClientRectangle.Height))
+      {
         y = -(this.AutoScrollMinSize.Height - base.ClientRectangle.Height);
+      }
       if (x > 0)
+      {
         x = 0;
+      }
       if (y > 0)
+      {
         y = 0;
+      }
 
       return new Point(x, y);
     }
@@ -338,7 +372,9 @@ namespace Cyotek.Windows.Forms
       handler = this.AutoScrollChanged;
 
       if (handler != null)
+      {
         handler(this, e);
+      }
     }
 
     /// <summary>
@@ -354,7 +390,9 @@ namespace Cyotek.Windows.Forms
       handler = this.AutoScrollMarginChanged;
 
       if (handler != null)
+      {
         handler(this, e);
+      }
     }
 
     /// <summary>
@@ -373,7 +411,9 @@ namespace Cyotek.Windows.Forms
       handler = this.AutoScrollMinSizeChanged;
 
       if (handler != null)
+      {
         handler(this, e);
+      }
     }
 
     /// <summary>
@@ -389,8 +429,14 @@ namespace Cyotek.Windows.Forms
       handler = this.AutoScrollPositionChanged;
 
       if (handler != null)
+      {
         handler(this, e);
+      }
     }
+
+    #endregion
+
+    #region Private Members
 
     /// <summary>
     ///   Adjusts the scrollbars.
@@ -398,57 +444,37 @@ namespace Cyotek.Windows.Forms
     private void AdjustScrollbars()
     {
       Rectangle clientRectangle;
-      Size scrollSize;
-      Size pageSize;
-      int horzAddition;
-      int vertAddition;
-      bool horizontalScrollVisible;
-      bool verticalScrollVisible;
 
       clientRectangle = this.ClientRectangle;
-      scrollSize = new Size();
-      pageSize = new Size();
-      horzAddition = 0;
-      vertAddition = 0;
-      horizontalScrollVisible = false;
-      verticalScrollVisible = false;
 
-      if (this.AutoScroll && (this.AutoScrollMinSize.Height > clientRectangle.Height || this.AutoScrollMinSize.Width > clientRectangle.Width))
+      if (clientRectangle.Width > 1 && clientRectangle.Height > 1)
       {
-        int i;
+        Size scrollSize;
+        Size pageSize;
+        bool horizontalScrollVisible;
+        bool verticalScrollVisible;
 
-        for (i = 0; i < 2; i++)
+        scrollSize = Size.Empty;
+        pageSize = Size.Empty;
+
+        horizontalScrollVisible = this.AutoScroll && this.AutoScrollMinSize.Width > clientRectangle.Width;
+        verticalScrollVisible = this.AutoScroll && this.AutoScrollMinSize.Height > clientRectangle.Height;
+
+        if (verticalScrollVisible)
         {
-          if (this.AutoScrollMinSize.Width > (clientRectangle.Width - vertAddition))
-          {
-            horizontalScrollVisible = true;
-            horzAddition = SystemInformation.VerticalScrollBarWidth;
-          }
-
-          if (this.AutoScrollMinSize.Height > (clientRectangle.Height - horzAddition))
-          {
-            verticalScrollVisible = true;
-            vertAddition = SystemInformation.HorizontalScrollBarHeight;
-          }
+          scrollSize.Height = this.AutoScrollMinSize.Height;
+          pageSize.Height = clientRectangle.Height - 1;
         }
-      }
 
-      if (verticalScrollVisible)
-      {
-        scrollSize.Height = this.AutoScrollMinSize.Height;
-        if (clientRectangle.Height > horzAddition)
-          pageSize.Height = clientRectangle.Height - horzAddition;
-      }
+        if (horizontalScrollVisible)
+        {
+          scrollSize.Width = this.AutoScrollMinSize.Width;
+          pageSize.Width = clientRectangle.Width - 1;
+        }
 
-      if (horizontalScrollVisible)
-      {
-        scrollSize.Width = this.AutoScrollMinSize.Width;
-        if (clientRectangle.Width > vertAddition)
-          pageSize.Width = clientRectangle.Width - vertAddition;
+        this.ScrollSize = scrollSize;
+        this.PageSize = pageSize;
       }
-
-      this.ScrollSize = scrollSize;
-      this.PageSize = pageSize;
     }
 
     /// <summary>
@@ -461,7 +487,9 @@ namespace Cyotek.Windows.Forms
       {
         this.SuspendLayout();
         foreach (Control child in Controls)
+        {
           child.Location -= offset;
+        }
 
         _autoScrollPosition = new Point(_autoScrollPosition.X - offset.Width, _autoScrollPosition.Y - offset.Height);
         this.ScrollTo(-_autoScrollPosition.X, -_autoScrollPosition.Y);

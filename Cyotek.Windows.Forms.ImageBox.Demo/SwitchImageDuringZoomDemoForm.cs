@@ -7,11 +7,11 @@ using System.Windows.Forms;
 namespace Cyotek.Windows.Forms.Demo
 {
   // Cyotek ImageBox
-  // Copyright (c) 2010-2013 Cyotek.
+  // Copyright (c) 2010-2015 Cyotek Ltd.
   // http://cyotek.com
   // http://cyotek.com/blog/tag/imagebox
 
-  // Licensed under the MIT License. See imagebox-license.txt for the full text.
+  // Licensed under the MIT License. See license.txt for the full text.
 
   // If you use this control in your applications, attribution, donations or contributions are welcome.
 
@@ -23,7 +23,7 @@ namespace Cyotek.Windows.Forms.Demo
 
     #endregion
 
-    #region Constructors
+    #region Public Constructors
 
     public SwitchImageDuringZoomDemoForm()
     {
@@ -32,7 +32,7 @@ namespace Cyotek.Windows.Forms.Demo
 
     #endregion
 
-    #region Overridden Members
+    #region Overridden Methods
 
     /// <summary>
     /// Clean up any resources being used.
@@ -43,12 +43,16 @@ namespace Cyotek.Windows.Forms.Demo
       if (disposing)
       {
         if (components != null)
+        {
           components.Dispose();
+        }
 
         if (this.ImageCache != null)
         {
           foreach (Image image in this.ImageCache.Values)
+          {
             image.Dispose();
+          }
           this.ImageCache = null;
         }
       }
@@ -85,7 +89,7 @@ namespace Cyotek.Windows.Forms.Demo
 
     #endregion
 
-    #region Properties
+    #region Private Properties
 
     private IDictionary<string, Image> ImageCache { get; set; }
 
@@ -110,7 +114,7 @@ namespace Cyotek.Windows.Forms.Demo
 
     #endregion
 
-    #region Members
+    #region Private Members
 
     private void AddLayer(string name, int lowerZoom, int upperZoom)
     {
@@ -162,7 +166,9 @@ namespace Cyotek.Windows.Forms.Demo
       Image result;
 
       if (this.ImageCache == null)
+      {
         this.ImageCache = new Dictionary<string, Image>();
+      }
 
       if (!this.ImageCache.TryGetValue(name, out result))
       {
@@ -204,7 +210,9 @@ namespace Cyotek.Windows.Forms.Demo
         cursorToolStripStatusLabel.Text = this.FormatPoint(point);
       }
       else
+      {
         cursorToolStripStatusLabel.Text = string.Empty;
+      }
     }
 
     private void UpdateMap()
@@ -301,15 +309,19 @@ namespace Cyotek.Windows.Forms.Demo
           this.ResetZoomOnUpdate = true;
         }
         else if ((e.Actions & ImageBoxZoomActions.ZoomIn) == ImageBoxZoomActions.ZoomIn)
+        {
           this.VirtualZoom++;
+        }
         else if ((e.Actions & ImageBoxZoomActions.ZoomOut) == ImageBoxZoomActions.ZoomOut)
+        {
           this.VirtualZoom--;
+        }
 
         // TODO: Currently the ZoomChanged and Zoomed events are raised after the zoom level has changed, but before any
         // actions such as modifying scrollbars occur. This means methods such as GetSourceImageRegion will return the
         // wrong X and Y values. Until this is fixed, using a timer to trigger the change.
         // However, if you had lots of map changes to make then using a timer would be a good idea regardless; for example
-        // if the user rapdily zooms through the available levels, they'll have a smoother experiance if you only load
+        // if the user rapdily zooms through the available levels, they'll have a smoother experience if you only load
         // the data once they've stopped zooming
         refreshMapTimer.Stop();
         refreshMapTimer.Start();
@@ -335,7 +347,7 @@ namespace Cyotek.Windows.Forms.Demo
 
     private struct MapLayerData
     {
-      #region Properties
+      #region Public Properties
 
       public int LowerZoom { get; set; }
 

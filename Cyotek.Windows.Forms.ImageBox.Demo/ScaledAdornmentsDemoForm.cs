@@ -2,23 +2,24 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 using Cyotek.Windows.Forms.Demo.Properties;
 
 namespace Cyotek.Windows.Forms.Demo
 {
   // Cyotek ImageBox
-  // Copyright (c) 2010-2013 Cyotek.
+  // Copyright (c) 2010-2015 Cyotek Ltd.
   // http://cyotek.com
   // http://cyotek.com/blog/tag/imagebox
 
-  // Licensed under the MIT License. See imagebox-license.txt for the full text.
+  // Licensed under the MIT License. See license.txt for the full text.
 
   // If you use this control in your applications, attribution, donations or contributions are welcome.
 
   internal partial class ScaledAdornmentsDemoForm : BaseForm
   {
-    #region Instance Fields
+    #region Fields
 
     private List<Point> _landmarks;
 
@@ -30,12 +31,12 @@ namespace Cyotek.Windows.Forms.Demo
 
     public ScaledAdornmentsDemoForm()
     {
-      InitializeComponent();
+      this.InitializeComponent();
     }
 
     #endregion
 
-    #region Overridden Members
+    #region Methods
 
     protected override void OnLoad(EventArgs e)
     {
@@ -51,24 +52,16 @@ namespace Cyotek.Windows.Forms.Demo
       this.AddLandmark(new Point(779, 239));
     }
 
-    #endregion
-
-    #region Members
+    private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+      AboutDialog.ShowAboutDialog();
+    }
 
     private void AddLandmark(Point point)
     {
       Debug.Print("Added landmark: {0}", point);
 
-      _landmarks.Add(new Point(point.X - (_markerImage.Size.Width / 2), point.Y - _markerImage.Size.Height));
-    }
-
-    #endregion
-
-    #region Event Handlers
-
-    private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
-    {
-      AboutDialog.ShowAboutDialog();
+      _landmarks.Add(new Point(point.X, point.Y));
     }
 
     private void closeToolStripMenuItem_Click(object sender, EventArgs e)
@@ -88,12 +81,35 @@ namespace Cyotek.Windows.Forms.Demo
       }
     }
 
+    private void imageBox_MouseLeave(object sender, EventArgs e)
+    {
+      positionToolStripStatusLabel.Text = string.Empty;
+    }
+
+    private void imageBox_MouseMove(object sender, MouseEventArgs e)
+    {
+      this.UpdateCursorPosition(e.Location);
+    }
+
     private void imageBox_Paint(object sender, PaintEventArgs e)
     {
-      Size markerSize;
+      Graphics g;
+      GraphicsState originalState;
+      Size scaledSize;
+      Size originalSize;
+      Size drawSize;
+      bool scaleAdornmentSize;
+
+      scaleAdornmentSize = scaleAdornmentsCheckBox.Checked;
+
+      g = e.Graphics;
+
+      originalState = g.Save();
 
       // Work out the size of the marker graphic according to the current zoom level
-      markerSize = imageBox.GetScaledSize(_markerImage.Size);
+      originalSize = _markerImage.Size;
+      scaledSize = imageBox.GetScaledSize(originalSize);
+      drawSize = scaleAdornmentSize ? scaledSize : originalSize;
 
       foreach (Point landmark in _landmarks)
       {
@@ -102,9 +118,30 @@ namespace Cyotek.Windows.Forms.Demo
         // Work out the location of the marker graphic according to the current zoom level and scroll offset
         location = imageBox.GetOffsetPoint(landmark);
 
+        // adjust the location so that the image is displayed above the location and centered to it
+        location.Y -= drawSize.Height;
+        location.X -= drawSize.Width >> 1;
+
         // Draw the marker
-        e.Graphics.DrawImage(_markerImage, new Rectangle(location, markerSize), new Rectangle(Point.Empty, _markerImage.Size), GraphicsUnit.Pixel);
+        g.InterpolationMode = InterpolationMode.NearestNeighbor;
+        g.DrawImage(_markerImage, new Rectangle(location, drawSize), new Rectangle(Point.Empty, originalSize), GraphicsUnit.Pixel);
       }
+
+      g.Restore(originalState);
+    }
+
+    private void scaleAdornmentsCheckBox_CheckedChanged(object sender, EventArgs e)
+    {
+      imageBox.Invalidate();
+    }
+
+    private void UpdateCursorPosition(Point location)
+    {
+      Point point;
+
+      point = imageBox.PointToImage(location);
+
+      positionToolStripStatusLabel.Text = this.FormatPoint(point);
     }
 
     #endregion

@@ -4,12 +4,21 @@ using System.Collections.Generic;
 
 namespace Cyotek.Windows.Forms
 {
+  // Cyotek ImageBox
+  // Copyright (c) 2010-2015 Cyotek Ltd.
+  // http://cyotek.com
+  // http://cyotek.com/blog/tag/imagebox
+
+  // Licensed under the MIT License. See license.txt for the full text.
+
+  // If you use this control in your applications, attribution, donations or contributions are welcome.
+
   /// <summary>
   /// Represents available levels of zoom in an <see cref="ImageBox"/> control
   /// </summary>
   public class ZoomLevelCollection : IList<int>
   {
-    #region Constructors
+    #region Public Constructors
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ZoomLevelCollection"/> class.
@@ -28,14 +37,16 @@ namespace Cyotek.Windows.Forms
       : this()
     {
       if (collection == null)
-        throw new ArgumentNullException("collection");
+      {
+        throw new ArgumentNullException(nameof(collection));
+      }
 
       this.AddRange(collection);
     }
 
     #endregion
 
-    #region Class Properties
+    #region Public Class Properties
 
     /// <summary>
     /// Returns the default zoom levels
@@ -45,15 +56,15 @@ namespace Cyotek.Windows.Forms
       get
       {
         return new ZoomLevelCollection(new[]
-        {
-          7, 10, 15, 20, 25, 30, 50, 70, 100, 150, 200, 300, 400, 500, 600, 700, 800, 1200, 1600
-        });
+                                       {
+                                         7, 10, 15, 20, 25, 30, 50, 70, 100, 150, 200, 300, 400, 500, 600, 700, 800, 1200, 1600
+                                       });
       }
     }
 
     #endregion
 
-    #region Properties
+    #region Public Properties
 
     /// <summary>
     /// Gets the number of elements contained in the <see cref="ZoomLevelCollection" />.
@@ -91,6 +102,10 @@ namespace Cyotek.Windows.Forms
       }
     }
 
+    #endregion
+
+    #region Protected Properties
+
     /// <summary>
     /// Gets or sets the backing list.
     /// </summary>
@@ -98,7 +113,7 @@ namespace Cyotek.Windows.Forms
 
     #endregion
 
-    #region Members
+    #region Public Members
 
     /// <summary>
     /// Adds an item to the <see cref="T:System.Collections.Generic.ICollection`1" />.
@@ -117,10 +132,14 @@ namespace Cyotek.Windows.Forms
     public void AddRange(IEnumerable<int> collection)
     {
       if (collection == null)
-        throw new ArgumentNullException("collection");
+      {
+        throw new ArgumentNullException(nameof(collection));
+      }
 
       foreach (int value in collection)
+      {
         this.Add(value);
+      }
     }
 
     /// <summary>
@@ -150,7 +169,7 @@ namespace Cyotek.Windows.Forms
     {
       for (int i = 0; i < this.Count; i++)
       {
-        array[arrayIndex + i] = this.List.Values[i]; 
+        array[arrayIndex + i] = this.List.Values[i];
       }
     }
 
@@ -164,13 +183,13 @@ namespace Cyotek.Windows.Forms
       int nearestDifference = Math.Abs(nearestValue - zoomLevel);
       for (int i = 1; i < this.Count; i++)
       {
-         int value = this.List.Values[i];
-         int difference = Math.Abs(value - zoomLevel);
-         if (difference < nearestDifference)
-         {
-            nearestValue = value;
-            nearestDifference = difference;
-         }
+        int value = this.List.Values[i];
+        int difference = Math.Abs(value - zoomLevel);
+        if (difference < nearestDifference)
+        {
+          nearestValue = value;
+          nearestDifference = difference;
+        }
       }
       return nearestValue;
     }
@@ -216,7 +235,9 @@ namespace Cyotek.Windows.Forms
 
       index = this.IndexOf(this.FindNearest(zoomLevel));
       if (index < this.Count - 1)
+      {
         index++;
+      }
 
       return this[index];
     }
@@ -232,7 +253,9 @@ namespace Cyotek.Windows.Forms
 
       index = this.IndexOf(this.FindNearest(zoomLevel));
       if (index > 0)
+      {
         index--;
+      }
 
       return this[index];
     }

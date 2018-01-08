@@ -1,5 +1,50 @@
 # Cyotek ImageBox Change Log
 
+## 1.2
+### Changed
+* Reworked events to have less overhead
+* Switched to semantic versioning
+
+## 1.1.5.1
+* **FIX:** Fixes the `FitRectangle` method from increasing the width or height of the source rectangle if `X` or `Y` were negative (generally seen when the `SelectionMode` is set to `Rectangle` and you draw outside the bounds of the image area)
+* **FIX:** Resizing the selection in the `ImageBoxEx` control now works correctly even if the mouse passes outside the bounds of the image.
+
+## 1.1.5.0
+* **NEW:** Added `AllowUnfocusedMouseWheel` property. If set to `true` the control will support mouse wheel zooming even when it does not have focus
+* **FIX:** The `fitToBounds` parameter of the `PointToImage` wasn't being used correctly
+
+## 1.1.4.6
+* Zooming in or out using the default keybinds now preserves the center point relative to the new zoom
+* Added new overloads to `ZoomIn` and `ZoomOut` to determine if the center point should be preserved
+* Added new `MaximumSelectionSize` property to the demonstration `ImageBoxEx` control that allows for more control over default selection
+* Fixed the **About** dialog in the demonstration program not loading the default tab correctly
+* Refactored zoom handling for mouse and keyboard to avoid duplicate calculations
+* Updated copyright year
+
+## 1.1.4.5
+* `ImageBoxEx` example control now correctly allows you to move and resize selection regions even when the control is zoomed
+* If the `InterpolationMode` property is set to `Default`, the `ImageBox` control will now choose an appropriate mode based on the current zoom levels
+
+## 1.1.4.4
+### Changes and new features
+* Added new `DrawBackground` virtual method. This allows you to override how the `ImageBox` draws the image background without having to override the entire `OnPaint` method.
+
+## 1.1.4.3
+### Changes and new features
+* Added a new `TextPadding` property and corresponding `DrawLabel` overload. When this property is set, rendered text from the `Text` and `TextAlign` properties is drawn with the appropriate padding. If the `TextBackColor` property is set to something not fully transparent, then the background will be filled in the original render spot, excluding the padding, allowing for labels with wider background borders.
+
+## 1.1.4.2
+### Changes and new features
+* `DrawImage` now also ignores `OutOfMemoryException` exceptions
+* Removed requirement for .NET 3.5 thanks to a commit from [dahmage](https://github.com/dahmage)
+* Added `GetScaledRectangle` overloads using `Point` and `Size` (and the float variant) parameters
+
+### Bug Fixes
+* Calling `SelectAll` caused a crash if a backing image wasn't present (even if `VirtualMode` was set)
+
+### Demonstration changes
+* Added a new **Resizable Selection** demo. This demo makes use of a subclass of the `ImageBox` to add native dragging and resizing of the region defined by the `SelectionRegion` property.
+
 ## 1.1.4.1
 ### Bug Fixes
 * Removed unnecessary `UpdateStyles` calls.
@@ -12,7 +57,7 @@
 * Added NuGet package
 * Added a new `SizeMode` property. This allows you to switch between `Normal`, `Fit` and `Stretch` modes. Stretch is a new mode for the `ImageBox`, and acts similar to existing `Fit` functionality except the aspect ratio is not preserved.
 * The `SizeToFit` property has been marked as deprecated and should no longer be used. The `SizeMode` property has a `Fit` value that should be used instead. Setting the `SizeToFit` property will now manipulate `SizeMode` instead.
-* Added a license file to hopefully cut down on questions about usage. The `ImageBox` control is licensed under the MIT license, allowing you free reign to use it in your projects, commercial or otherwise. See `imagebox-license.txt` for the full text.
+* Added a license file to hopefully cut down on questions about usage. The `ImageBox` control is licensed under the MIT license, allowing you free reign to use it in your projects, commercial or otherwise. See `license.txt` for the full text.
 * Added a new `CenterPoint` property. This property returns the pixel at the center of the current image viewport.
 * Added a bunch of missing XML comments documentation.
 * Added new overloads for most methods that accepted a source `Rectangle`, `Point` or `Size` to also accept `float` and `int` arguments.
@@ -20,7 +65,7 @@
 * Added new `CenterToImage` method which resets the viewport to be centered of the image, in the same way as zooming via the keyboard used to work.
 * Added support for animated GIF's, thanks to a contribution from [Eggy](https://github.com/teamalpha5441). Note animations only play at runtime, not design time.
 * The `Text` and `Font` properties are now available and, if set, will be displayed in the control. You can use the `ForeColor`, `TextBackColor`, `TextAlign`, `TextDisplayMode` and `ScaleText` properties to determine how the text will be rendered.
-* A new `DrawLabel` method that performs text drawing is available for use by custom implementations or virtual modes. 
+* A new `DrawLabel` method that performs text drawing is available for use by custom implementations or virtual modes.
 
 ### Demonstration Changes
 * Added a new *Scaled Adornments* demonstration, showing how easy it is to add custom drawing that is scaled and positioned appropriately.
@@ -28,7 +73,7 @@
 * Added new *Text* and *Size Mode* demonstrations.
 
 ### Bug Fixes
-* Zooming in and out with the keyboard now keeps the view centered to the same pixel that was centered prior to the zoom 
+* Zooming in and out with the keyboard now keeps the view centered to the same pixel that was centered prior to the zoom
 * Zooming in and out with the keyboard is now correctly disabled if the `AllowZoom` property is `False`, or the `SizeMode` property is a value other than `Normal`. This means keyboard behaviour now matches mouse behaviour.
 * If the mouse wheel was rapidly spun (thus having a multiple of the base delta), the `Zoom` property was only adjusted once
 * Setting the `GridScale` property to `None` rendered the default `Small` grid. Using a scale of `None` now correctly just fills the grid area with a solid brush from the `GridColor` property.

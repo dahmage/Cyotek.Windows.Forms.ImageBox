@@ -3,9 +3,9 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
-
 #if USEWIN32PINVOKELIB
 using Cyotek.Win32;
+
 #endif
 
 // Original ScrollControl code by Scott Crawford (http://sukiware.com/)
@@ -34,7 +34,7 @@ namespace Cyotek.Windows.Forms
 
     #endregion
 
-    #region Constructors
+    #region Public Constructors
 
     /// <summary>
     ///   Initializes a new instance of the <see cref="ScrollControl" /> class.
@@ -78,6 +78,7 @@ namespace Cyotek.Windows.Forms
     /// <summary>
     ///   Occurs when the user or code scrolls through the client area.
     /// </summary>
+    [Category("Action")]
     public event ScrollEventHandler Scroll;
 
     /// <summary>
@@ -128,7 +129,7 @@ namespace Cyotek.Windows.Forms
 
     #endregion
 
-    #region Overridden Members
+    #region Overridden Methods
 
     /// <summary>
     ///   Raises the <see cref="System.Windows.Forms.Control.EnabledChanged" /> event.
@@ -154,7 +155,9 @@ namespace Cyotek.Windows.Forms
       base.OnMouseDown(e);
 
       if (!this.Focused)
+      {
         this.Focus();
+      }
     }
 
     /// <summary>
@@ -180,18 +183,26 @@ namespace Cyotek.Windows.Forms
         if (this.VerticalScroll.Visible && this.VerticalScroll.Enabled)
         {
           if (ModifierKeys == Keys.Control)
+          {
             delta = this.VerticalScroll.LargeChange;
+          }
           else
+          {
             delta = SystemInformation.MouseWheelScrollLines * this.VerticalScroll.SmallChange;
+          }
 
           y += (e.Delta > 0) ? -delta : delta;
         }
         else if (this.HorizontalScroll.Visible && this.HorizontalScroll.Enabled)
         {
           if (ModifierKeys == Keys.Control)
+          {
             delta = this.HorizontalScroll.LargeChange;
+          }
           else
+          {
             delta = SystemInformation.MouseWheelScrollLines * this.HorizontalScroll.SmallChange;
+          }
 
           x += (e.Delta > 0) ? -delta : delta;
         }
@@ -201,7 +212,9 @@ namespace Cyotek.Windows.Forms
 
       handler = this.MouseWheel;
       if (handler != null)
+      {
         handler(this, e);
+      }
 
       base.OnMouseWheel(e);
     }
@@ -229,7 +242,7 @@ namespace Cyotek.Windows.Forms
 
     #endregion
 
-    #region Properties
+    #region Public Properties
 
     /// <summary>
     ///   Gets or sets a value indicating whether the horizontal scrollbar should always be displayed, even when not required.
@@ -262,7 +275,9 @@ namespace Cyotek.Windows.Forms
             this.Invalidate();
           }
           else
+          {
             this.UpdateHorizontalScrollbar();
+          }
         }
       }
     }
@@ -300,7 +315,9 @@ namespace Cyotek.Windows.Forms
             this.Invalidate();
           }
           else
+          {
             this.UpdateVerticalScrollbar();
+          }
         }
       }
     }
@@ -346,10 +363,14 @@ namespace Cyotek.Windows.Forms
       set
       {
         if (value.Width < 0)
-          throw new ArgumentOutOfRangeException("value", "Width must be a positive integer.");
+        {
+          throw new ArgumentOutOfRangeException(nameof(value), "Width must be a positive integer.");
+        }
 
         if (value.Height < 0)
-          throw new ArgumentOutOfRangeException("value", "Height must be a positive integer.");
+        {
+          throw new ArgumentOutOfRangeException(nameof(value), "Height must be a positive integer.");
+        }
 
         if (this.PageSize != value)
         {
@@ -373,10 +394,14 @@ namespace Cyotek.Windows.Forms
       set
       {
         if (value.Width < 0)
-          throw new ArgumentOutOfRangeException("value", "Width must be a positive integer.");
+        {
+          throw new ArgumentOutOfRangeException(nameof(value), "Width must be a positive integer.");
+        }
 
         if (value.Height < 0)
-          throw new ArgumentOutOfRangeException("value", "Height must be a positive integer.");
+        {
+          throw new ArgumentOutOfRangeException(nameof(value), "Height must be a positive integer.");
+        }
 
         if (this.ScrollSize != value)
         {
@@ -400,10 +425,14 @@ namespace Cyotek.Windows.Forms
       set
       {
         if (value.Width < 0)
-          throw new ArgumentOutOfRangeException("value", "Width must be a positive integer.");
+        {
+          throw new ArgumentOutOfRangeException(nameof(value), "Width must be a positive integer.");
+        }
 
         if (value.Height < 0)
-          throw new ArgumentOutOfRangeException("value", "Height must be a positive integer.");
+        {
+          throw new ArgumentOutOfRangeException(nameof(value), "Height must be a positive integer.");
+        }
 
         if (this.StepSize != value)
         {
@@ -422,6 +451,10 @@ namespace Cyotek.Windows.Forms
     [Browsable(false)]
     public VScrollProperties VerticalScroll { get; protected set; }
 
+    #endregion
+
+    #region Protected Properties
+
     /// <summary>
     ///   Gets or sets a value indicating whether the horizontal scrollbar is displayed
     /// </summary>
@@ -438,7 +471,9 @@ namespace Cyotek.Windows.Forms
         uint longValue = NativeMethods.GetWindowLong(this.Handle, NativeMethods.GWL_STYLE);
 
         if (value)
+        {
           longValue |= NativeMethods.WS_HSCROLL;
+        }
         else
         {
           unchecked
@@ -466,7 +501,9 @@ namespace Cyotek.Windows.Forms
         uint longValue = NativeMethods.GetWindowLong(this.Handle, NativeMethods.GWL_STYLE);
 
         if (value)
+        {
           longValue |= NativeMethods.WS_VSCROLL;
+        }
         else
         {
           unchecked
@@ -490,7 +527,7 @@ namespace Cyotek.Windows.Forms
 
     #endregion
 
-    #region Members
+    #region Public Members
 
     /// <summary>
     ///   Scrolls both scrollbars to the given values
@@ -503,15 +540,19 @@ namespace Cyotek.Windows.Forms
       this.ScrollTo(ScrollOrientation.VerticalScroll, y);
     }
 
+    #endregion
+
+    #region Protected Members
+
     /// <summary>
     ///   Gets the type of scrollbar event.
     /// </summary>
-    /// <param name="wparam">The wparam value from a window proc.</param>
+    /// <param name="wParam">The wparam value from a window proc.</param>
     /// <returns></returns>
     /// <exception cref="System.ArgumentException"></exception>
-    protected ScrollEventType GetEventType(IntPtr wparam)
+    protected ScrollEventType GetEventType(IntPtr wParam)
     {
-      switch (wparam.ToInt32() & 0xFFFF)
+      switch (wParam.ToInt32() & 0xFFFF)
       {
         case NativeMethods.SB_BOTTOM:
           return ScrollEventType.Last;
@@ -532,7 +573,7 @@ namespace Cyotek.Windows.Forms
         case NativeMethods.SB_TOP:
           return ScrollEventType.First;
         default:
-          throw new ArgumentException(string.Format("{0} isn't a valid scroll event type.", wparam), "wparam");
+          throw new ArgumentException(string.Format("{0} isn't a valid scroll event type.", wParam), "wparam");
       }
     }
 
@@ -551,7 +592,9 @@ namespace Cyotek.Windows.Forms
       handler = this.BorderStyleChanged;
 
       if (handler != null)
+      {
         handler(this, e);
+      }
     }
 
     /// <summary>
@@ -569,7 +612,9 @@ namespace Cyotek.Windows.Forms
       handler = this.PageSizeChanged;
 
       if (handler != null)
+      {
         handler(this, e);
+      }
     }
 
     /// <summary>
@@ -588,7 +633,9 @@ namespace Cyotek.Windows.Forms
       handler = this.Scroll;
 
       if (handler != null)
+      {
         handler(this, e);
+      }
     }
 
     /// <summary>
@@ -606,7 +653,9 @@ namespace Cyotek.Windows.Forms
       handler = this.ScrollSizeChanged;
 
       if (handler != null)
+      {
         handler(this, e);
+      }
     }
 
     /// <summary>
@@ -622,7 +671,9 @@ namespace Cyotek.Windows.Forms
       handler = this.StepSizeChanged;
 
       if (handler != null)
+      {
         handler(this, e);
+      }
     }
 
     /// <summary>
@@ -637,9 +688,13 @@ namespace Cyotek.Windows.Forms
       oldInfo = this.GetScrollInfo(scrollbar);
 
       if (value > ((oldInfo.nMax - oldInfo.nMin) + 1) - oldInfo.nPage)
+      {
         value = ((oldInfo.nMax - oldInfo.nMin) + 1) - oldInfo.nPage;
+      }
       if (value < oldInfo.nMin)
+      {
         value = oldInfo.nMin;
+      }
 
       if (oldInfo.nPos != value)
       {
@@ -693,7 +748,9 @@ namespace Cyotek.Windows.Forms
       scrollInfo = new NativeMethods.SCROLLINFO();
       scrollInfo.fMask = NativeMethods.SIF.SIF_PAGE | NativeMethods.SIF.SIF_RANGE;
       if (this.AlwaysShowHScroll || !this.Enabled)
+      {
         scrollInfo.fMask |= NativeMethods.SIF.SIF_DISABLENOSCROLL;
+      }
       scrollInfo.nMin = 0;
       scrollInfo.nMax = scrollWidth;
       scrollInfo.nPage = pageWidth;
@@ -749,7 +806,9 @@ namespace Cyotek.Windows.Forms
       scrollInfo = new NativeMethods.SCROLLINFO();
       scrollInfo.fMask = NativeMethods.SIF.SIF_PAGE | NativeMethods.SIF.SIF_RANGE;
       if (AlwaysShowVScroll)
+      {
         scrollInfo.fMask |= NativeMethods.SIF.SIF_DISABLENOSCROLL;
+      }
       scrollInfo.nMin = 0;
       scrollInfo.nMax = scrollHeight;
       scrollInfo.nPage = pageHeight;
@@ -820,10 +879,14 @@ namespace Cyotek.Windows.Forms
         }
 
         if (scrollInfo.nPos > ((scrollInfo.nMax - scrollInfo.nMin) + 1) - scrollInfo.nPage)
+        {
           scrollInfo.nPos = ((scrollInfo.nMax - scrollInfo.nMin) + 1) - scrollInfo.nPage;
+        }
 
         if (scrollInfo.nPos < scrollInfo.nMin)
+        {
           scrollInfo.nPos = scrollInfo.nMin;
+        }
 
         newValue = scrollInfo.nPos;
         this.SetScrollInfo(scrollbar, scrollInfo, true);
@@ -836,6 +899,10 @@ namespace Cyotek.Windows.Forms
 
       this.OnScroll(new ScrollEventArgs(eventType, oldValue, newValue, scrollbar));
     }
+
+    #endregion
+
+    #region Private Members
 
     /// <summary>
     ///   Gets scrollbar properties

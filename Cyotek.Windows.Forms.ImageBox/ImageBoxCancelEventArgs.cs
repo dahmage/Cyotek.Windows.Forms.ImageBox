@@ -4,11 +4,11 @@ using System.Drawing;
 namespace Cyotek.Windows.Forms
 {
   // Cyotek ImageBox
-  // Copyright (c) 2010-2013 Cyotek.
+  // Copyright (c) 2010-2015 Cyotek Ltd.
   // http://cyotek.com
   // http://cyotek.com/blog/tag/imagebox
 
-  // Licensed under the MIT License. See imagebox-license.txt for the full text.
+  // Licensed under the MIT License. See license.txt for the full text.
 
   // If you use this control in your applications, attribution, donations or contributions are welcome.
 
@@ -17,7 +17,7 @@ namespace Cyotek.Windows.Forms
   /// </summary>
   public class ImageBoxCancelEventArgs : CancelEventArgs
   {
-    #region Constructors
+    #region Public Constructors
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ImageBoxCancelEventArgs"/> class.
@@ -29,6 +29,10 @@ namespace Cyotek.Windows.Forms
       this.Location = location;
     }
 
+    #endregion
+
+    #region Protected Constructors
+
     /// <summary>
     /// Initializes a new instance of the <see cref="ImageBoxCancelEventArgs"/> class.
     /// </summary>
@@ -37,7 +41,7 @@ namespace Cyotek.Windows.Forms
 
     #endregion
 
-    #region Properties
+    #region Public Properties
 
     /// <summary>
     /// Gets or sets the location of the action being performed.

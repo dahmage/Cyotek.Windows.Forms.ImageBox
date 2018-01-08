@@ -5,17 +5,17 @@ using System.Windows.Forms;
 namespace Cyotek.Windows.Forms.Demo
 {
   // Cyotek ImageBox
-  // Copyright (c) 2010-2013 Cyotek.
+  // Copyright (c) 2010-2015 Cyotek Ltd.
   // http://cyotek.com
   // http://cyotek.com/blog/tag/imagebox
 
-  // Licensed under the MIT License. See imagebox-license.txt for the full text.
+  // Licensed under the MIT License. See license.txt for the full text.
 
   // If you use this control in your applications, attribution, donations or contributions are welcome.
 
   internal partial class BaseForm : Form
   {
-    #region Constructors
+    #region Public Constructors
 
     public BaseForm()
     {
@@ -24,11 +24,14 @@ namespace Cyotek.Windows.Forms.Demo
 
     #endregion
 
-    #region Overridden Members
+    #region Overridden Methods
 
     protected override void OnLoad(EventArgs e)
     {
-      this.Font = SystemFonts.MessageBoxFont;
+      if (!this.DesignMode)
+      {
+        this.Font = SystemFonts.MessageBoxFont;
+      }
 
       base.OnLoad(e);
     }
@@ -42,7 +45,7 @@ namespace Cyotek.Windows.Forms.Demo
 
     #endregion
 
-    #region Members
+    #region Protected Members
 
     protected string FormatPoint(Point point)
     {

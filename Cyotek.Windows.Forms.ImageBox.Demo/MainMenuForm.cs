@@ -4,11 +4,11 @@ using System.Windows.Forms;
 namespace Cyotek.Windows.Forms.Demo
 {
   // Cyotek ImageBox
-  // Copyright (c) 2010-2013 Cyotek.
+  // Copyright (c) 2010-2015 Cyotek Ltd.
   // http://cyotek.com
   // http://cyotek.com/blog/tag/imagebox
 
-  // Licensed under the MIT License. See imagebox-license.txt for the full text.
+  // Licensed under the MIT License. See license.txt for the full text.
 
   // If you use this control in your applications, attribution, donations or contributions are welcome.
 
@@ -18,12 +18,12 @@ namespace Cyotek.Windows.Forms.Demo
 
     public MainMenuForm()
     {
-      InitializeComponent();
+      this.InitializeComponent();
     }
 
     #endregion
 
-    #region Overridden Members
+    #region Methods
 
     protected override void OnLoad(EventArgs e)
     {
@@ -32,14 +32,14 @@ namespace Cyotek.Windows.Forms.Demo
       base.OnLoad(e);
 
       demoPage = new TabPage
-      {
-        UseVisualStyleBackColor = true,
-        Padding = new Padding(9),
-        Text = "Demonstrations"
-      };
+                 {
+                   UseVisualStyleBackColor = true,
+                   Padding = new Padding(9),
+                   Text = "Demonstrations"
+                 };
 
-      groupBox1.Dock = DockStyle.Fill;
-      demoPage.Controls.Add(groupBox1);
+      demoGroupBox.Dock = DockStyle.Fill;
+      demoPage.Controls.Add(demoGroupBox);
 
       this.TabControl.TabPages.Insert(0, demoPage);
       this.TabControl.SelectedTab = demoPage;
@@ -47,21 +47,16 @@ namespace Cyotek.Windows.Forms.Demo
       this.Text = "Cyotek ImageBox Control for Windows Forms";
     }
 
-    #endregion
-
-    #region Members
-
-    private void ShowDemo<T>() where T : Form, new()
+    /// <summary>
+    /// Raises the <see cref="E:System.Windows.Forms.Form.Shown"/> event.
+    /// </summary>
+    /// <param name="e">A <see cref="T:System.EventArgs"/> that contains the event data. </param>
+    protected override void OnShown(EventArgs e)
     {
-      Cursor.Current = Cursors.WaitCursor;
+      base.OnShown(e);
 
-      using (Form form = new T())
-        form.ShowDialog(this);
+      imageBoxDemoButton.Focus();
     }
-
-    #endregion
-
-    #region Event Handlers
 
     private void animatedGifDemoButton_Click(object sender, EventArgs e)
     {
@@ -75,7 +70,12 @@ namespace Cyotek.Windows.Forms.Demo
 
     private void imageBoxDemoButton_Click(object sender, EventArgs e)
     {
-      this.ShowDemo<ImageBoxDemoForm>();
+      this.ShowDemo<GeneralDemoForm>();
+    }
+
+    private void minimapDemoButton_Click(object sender, EventArgs e)
+    {
+      this.ShowDemo<MiniMapDemoForm>();
     }
 
     private void pixelGridDemoButton_Click(object sender, EventArgs e)
@@ -83,9 +83,25 @@ namespace Cyotek.Windows.Forms.Demo
       this.ShowDemo<PixelGridForm>();
     }
 
+    private void resizableSelectionDemoButton_Click(object sender, EventArgs e)
+    {
+      this.ShowDemo<ResizableSelectionDemoForm>();
+    }
+
     private void scaledAdornmentsDemoButton_Click(object sender, EventArgs e)
     {
       this.ShowDemo<ScaledAdornmentsDemoForm>();
+    }
+
+    private void ShowDemo<T>()
+      where T : Form, new()
+    {
+      Cursor.Current = Cursors.WaitCursor;
+
+      using (Form form = new T())
+      {
+        form.ShowDialog(this);
+      }
     }
 
     private void sizeModeDemoButton_Click(object sender, EventArgs e)

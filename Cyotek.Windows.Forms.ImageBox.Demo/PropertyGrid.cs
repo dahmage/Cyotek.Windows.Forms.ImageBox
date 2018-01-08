@@ -1,11 +1,20 @@
 ﻿using System.Collections.Generic;
 using System.Windows.Forms;
 
-namespace Cyotek.Windows.Forms
+namespace Cyotek.Windows.Forms.Demo
 {
+  // Cyotek ImageBox
+  // Copyright (c) 2010-2015 Cyotek Ltd.
+  // http://cyotek.com
+  // http://cyotek.com/blog/tag/imagebox
+
+  // Licensed under the MIT License. See license.txt for the full text.
+
+  // If you use this control in your applications, attribution, donations or contributions are welcome.
+
   internal class PropertyGrid : System.Windows.Forms.PropertyGrid
   {
-    #region Members
+    #region Public Members
 
     public GridItem FindItem(string itemLabel)
     {
@@ -13,31 +22,36 @@ namespace Cyotek.Windows.Forms
 
       GridItem rootItem;
       GridItem matchingItem;
-      List<GridItem> searchItems;
+      Queue<GridItem> searchItems;
 
       matchingItem = null;
 
       // Find the GridItem root.
       rootItem = this.SelectedGridItem;
       while (rootItem.Parent != null)
+      {
         rootItem = rootItem.Parent;
-
+      }
+      
       // Search the tree.
-      searchItems = new List<GridItem>();
-      searchItems.Add(rootItem);
+      searchItems = new Queue<GridItem>();
+      
+      searchItems.Enqueue(rootItem);
 
-      while (searchItems.Count != 0 || matchingItem == null)
+      while (searchItems.Count != 0 && matchingItem == null)
       {
         GridItem checkItem;
 
-        checkItem = searchItems[0];
-        searchItems.RemoveAt(0);
+        checkItem = searchItems.Dequeue();
+        
         if (checkItem.Label == itemLabel)
+        {
           matchingItem = checkItem;
+        }
 
         foreach (GridItem item in checkItem.GridItems)
         {
-          searchItems.Add(item);
+          searchItems.Enqueue(item);
         }
       }
 
